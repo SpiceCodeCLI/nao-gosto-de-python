@@ -3,19 +3,37 @@
 import os
 
 import tree_sitter_python as tspython
+import tree_sitter_ruby as tsruby
+import tree_sitter_rust as tsrust
 from tree_sitter import Language, Parser
 
-PY_LANGUAGE = Language(tspython.language())
-
-parser = Parser(PY_LANGUAGE)
+def get_language_for_file(file_path):
+    """
+    Returns the Tree-sitter language object based on the file extension.
+    """
+    _, ext = os.path.splitext(file_path)
+    if ext == ".py":
+        return Language(tspython.language())
+    elif ext == ".rb":
+        return Language(tsruby.language())
+    elif ext == ".rs":
+        return Language(tsrust.language())
+    else:
+        raise ValueError(f"Unsupported file extension: {ext}")
+    
 
 # aqui pega o path to falando que javascript e melhor no js vc so bota o path aqui tem que fazer essa merda de os.path.join ta maluco
-file_path = os.path.join(os.path.dirname(__file__), "..", "..", "..", "code-to-analyze", "example.py")
+file_path = os.path.join(os.path.dirname(__file__), "..", "..", "..", "code-to-analyze", "example.rs")
 
 
 # vais ler o arquiov
 with open(file_path, "r", encoding="utf-8") as file:
     python_code = file.read()
+
+
+# inicilizai o parser com a linguagem certa
+language = get_language_for_file(file_path)
+parser = Parser(language)
 
 
 # usa o tree sitter pra fazer parse do arquivo
