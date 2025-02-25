@@ -45,12 +45,28 @@ def count_functions_from_tree(tree):
     return function_count
 
 
+# conta linhas de comentario
+def count_comment_lines_from_tree(tree, python_code):
+
+    comment_lines = 0
+
+    # mesma coisa das outras
+    for node in tree.root_node.children:
+        if node.type == "comment":
+
+            comment_text = python_code[node.start_byte:node.end_byte]
+            comment_lines += comment_text.count("\n") + 1  # adidiidcona 1 pra ultima linha
+    return comment_lines
+
+
 
 
 
 
 line_count = count_lines_from_tree(tree, python_code)
 function_count = count_functions_from_tree(tree)
+comment_line_count = count_comment_lines_from_tree(tree, python_code)
 
 print(f"The file has {line_count} lines.")
 print(f"The file has {function_count} functions.")
+print(f"The file has {comment_line_count} comment lines.")
