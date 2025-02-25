@@ -5,7 +5,6 @@ import os
 import tree_sitter_python as tspython
 import tree_sitter_ruby as tsruby
 import tree_sitter_rust as tsrust
-import tree_sitter_c as tsc
 import tree_sitter_java as tsjava
 import tree_sitter_javascript as tsjs
 import tree_sitter_lua as tslua
@@ -13,10 +12,6 @@ import tree_sitter_lua as tslua
 from tree_sitter import Language, Parser
 
 def get_language_for_file(file_path):
-    """
-    Returns the appropriate Tree-sitter Language object based on file extension.
-    Supported extensions: .py, .rb, .rs, .c, .cs, .java, .js, .lua
-    """
     _, ext = os.path.splitext(file_path)
     if ext == ".py":
         return Language(tspython.language())
@@ -24,8 +19,6 @@ def get_language_for_file(file_path):
         return Language(tsruby.language())
     elif ext == ".rs":
         return Language(tsrust.language())
-    elif ext == ".c":
-        return Language(tsc.language())
     elif ext == ".java":
         return Language(tsjava.language())
     elif ext == ".js":
