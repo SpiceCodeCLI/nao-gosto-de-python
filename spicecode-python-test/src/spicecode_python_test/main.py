@@ -33,6 +33,24 @@ def count_lines_from_tree(tree, python_code):
     return line_count
 
 
-# conta o numero de linhas e imprime na tela
+# aquji conta quantas funcoes tem
+def count_functions_from_tree(tree):
+
+    function_count = 0
+
+    # traversa a arvore e conta as fncoes
+    for node in tree.root_node.children:
+        if node.type == "function_definition":
+            function_count += 1
+    return function_count
+
+
+
+
+
+
 line_count = count_lines_from_tree(tree, python_code)
+function_count = count_functions_from_tree(tree)
+
 print(f"The file has {line_count} lines.")
+print(f"The file has {function_count} functions.")
