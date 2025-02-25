@@ -1,62 +1,37 @@
-from tree_sitter import Parser
-import tree_sitter_python as tspython  # This will provide the Python parser
 
-# Initialize the parser
-parser = Parser()
 
-# Load the Python language using the `tree-sitter-python` module
-parser.language = tspython.language()  # Set the language directly
+import os
 
-# Parse the Python file
-def parse_code(file_path: str):
-    """Parse the given file and return the AST for Python."""
-    with open(file_path, 'r', encoding='utf-8') as file:
-        code = file.read()
+import tree_sitter_python as tspython
+from tree_sitter import Language, Parser
 
-    tree = parser.parse(bytes(code, 'utf-8'))
-    return tree
+PY_LANGUAGE = Language(tspython.language())
 
-# Example analysis functions
-def count_lines(tree):
-    """Count the number of lines in the code."""
-    root_node = tree.root_node
-    return root_node.end_byte // root_node.start_byte
+parser = Parser(PY_LANGUAGE)
 
-def count_functions(tree):
-    """Count the number of functions in the AST."""
-    root_node = tree.root_node
-    function_count = 0
 
-    for node in root_node.children:
-        if node.type == 'function_definition':
-            function_count += 1
+# Specify the path to the Python file you want to parse
+file_path = os.path.join(os.path.dirname(__file__), "..", "..", "..", "code-to-analyze", "example.py")
 
-    return function_count
 
-def count_comments(tree):
-    """Count the number of comment lines in the AST."""
-    root_node = tree.root_node
-    comment_count = 0
+# Read the content of the Python file
+with open(file_path, "r", encoding="utf-8") as file:
+    python_code = file.read()
 
-    for node in root_node.children:
-        if node.type == 'comment':
-            comment_count += 1
+# Parse the content of the Python file
+tree = parser.parse(bytes(python_code, "utf8"))
 
-    return comment_count
+# Now, you can work with the parsed tree...
+def count_lines_from_tree(tree, python_code):
+    # Traverse the tree and get the range of the last node
+    last_node = tree.root_node
+    last_byte = last_node.end_byte
 
-def analyze_file(file_path: str):
-    """Analyze a Python file and print out counts for lines, functions, and comments."""
-    tree = parse_code(file_path)
-    
-    if tree:
-        line_count = count_lines(tree)
-        function_count = count_functions(tree)
-        comment_count = count_comments(tree)
+    # Count the number of newlines in the code up to the last byte position
+    line_count = python_code[:last_byte].count("\n") + 1  # Add 1 for the last line
 
-        print(f"Analysis for {file_path}:")
-        print(f"  Lines: {line_count}")
-        print(f"  Functions: {function_count}")
-        print(f"  Comments: {comment_count}")
+    return line_count
 
-if __name__ == "__main__":
-    analyze_file("code-to-analyze/python_example.py")
+# Count the lines using the tree object and the code content
+line_count = count_lines_from_tree(tree, python_code)
+print(f"The file has {line_count} lines.")
