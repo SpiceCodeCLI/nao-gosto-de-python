@@ -5,11 +5,17 @@ import os
 import tree_sitter_python as tspython
 import tree_sitter_ruby as tsruby
 import tree_sitter_rust as tsrust
+import tree_sitter_c as tsc
+import tree_sitter_java as tsjava
+import tree_sitter_javascript as tsjs
+import tree_sitter_lua as tslua
+
 from tree_sitter import Language, Parser
 
 def get_language_for_file(file_path):
     """
-    Returns the Tree-sitter language object based on the file extension.
+    Returns the appropriate Tree-sitter Language object based on file extension.
+    Supported extensions: .py, .rb, .rs, .c, .cs, .java, .js, .lua
     """
     _, ext = os.path.splitext(file_path)
     if ext == ".py":
@@ -18,12 +24,20 @@ def get_language_for_file(file_path):
         return Language(tsruby.language())
     elif ext == ".rs":
         return Language(tsrust.language())
+    elif ext == ".c":
+        return Language(tsc.language())
+    elif ext == ".java":
+        return Language(tsjava.language())
+    elif ext == ".js":
+        return Language(tsjs.language())
+    elif ext == ".lua":
+        return Language(tslua.language())
     else:
         raise ValueError(f"Unsupported file extension: {ext}")
     
 
 # aqui pega o path to falando que javascript e melhor no js vc so bota o path aqui tem que fazer essa merda de os.path.join ta maluco
-file_path = os.path.join(os.path.dirname(__file__), "..", "..", "..", "code-to-analyze", "example.rs")
+file_path = os.path.join(os.path.dirname(__file__), "..", "..", "..", "code-to-analyze", "example.js")
 
 
 # vais ler o arquiov
@@ -85,6 +99,7 @@ line_count = count_lines_from_tree(tree, python_code)
 function_count = count_functions_from_tree(tree)
 comment_line_count = count_comment_lines_from_tree(tree, python_code)
 
+print(f"Analyzing file: {os.path.basename(file_path)}")
 print(f"The file has {line_count} lines.")
 print(f"The file has {function_count} functions.")
 print(f"The file has {comment_line_count} comment lines.")
