@@ -1,3 +1,10 @@
+ate o google sabe qual linguagem a gengte deveria estar usando
+
+![image](https://github.com/user-attachments/assets/0529512c-c64b-4841-94b3-ca4df451adc6)
+
+
+
+
 # nao-gosto-de-python
 repositorio para testar python aprender etc
 
